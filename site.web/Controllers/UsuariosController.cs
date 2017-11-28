@@ -7,17 +7,30 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using site.web;
+using site.web.Models;
 
 namespace site.web.Controllers.Usuarios
 {
     public class UsuariosController : Controller
     {
         private treinamentoEntities db = new treinamentoEntities();
+        private IRepository repository;
+
+        public UsuariosController()
+        {
+            if (repository == null)
+                repository = new Repository();
+        }
+
+        public UsuariosController(IRepository _repository)
+        {
+            repository = _repository;
+        }
 
         // GET: Usuarios
         public ActionResult Index()
         {
-            return View(db.Usuario.ToList());
+            return View(repository.GetUsuarios());
         }
 
         // GET: Usuarios/Details/5
@@ -27,7 +40,9 @@ namespace site.web.Controllers.Usuarios
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuario usuario = db.Usuario.Find(id);
+
+            Usuario usuario = repository.GetUsuario(id);
+
             if (usuario == null)
             {
                 return HttpNotFound();
@@ -50,8 +65,7 @@ namespace site.web.Controllers.Usuarios
         {
             if (ModelState.IsValid)
             {
-                db.Usuario.Add(usuario);
-                db.SaveChanges();
+                repository.PostUsuario(usuario);
                 return RedirectToAction("Index");
             }
 
@@ -65,7 +79,7 @@ namespace site.web.Controllers.Usuarios
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuario usuario = db.Usuario.Find(id);
+            Usuario usuario = repository.GetUsuario(id);
             if (usuario == null)
             {
                 return HttpNotFound();
@@ -82,8 +96,7 @@ namespace site.web.Controllers.Usuarios
         {
             if (ModelState.IsValid)
             {
-                db.Entry(usuario).State = EntityState.Modified;
-                db.SaveChanges();
+                repository.PutUsuario(usuario);
                 return RedirectToAction("Index");
             }
             return View(usuario);
@@ -96,7 +109,7 @@ namespace site.web.Controllers.Usuarios
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Usuario usuario = db.Usuario.Find(id);
+            Usuario usuario = repository.GetUsuario(id);
             if (usuario == null)
             {
                 return HttpNotFound();
@@ -109,9 +122,7 @@ namespace site.web.Controllers.Usuarios
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Usuario usuario = db.Usuario.Find(id);
-            db.Usuario.Remove(usuario);
-            db.SaveChanges();
+            repository.DeleteUsuario(id);
             return RedirectToAction("Index");
         }
 

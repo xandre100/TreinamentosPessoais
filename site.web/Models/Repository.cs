@@ -5,7 +5,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
 
-namespace treinamento.site.Models
+namespace site.web.Models
 {
     public class Repository : IRepository
     {
@@ -18,41 +18,34 @@ namespace treinamento.site.Models
 
         public Usuario DeleteUsuario(int id)
         {
-            Usuario usuario = db.Usuarios.Find(id);
-
-            if (usuario == null)
-                return null;
-
-            db.Usuarios.Remove(usuario);
+            Usuario usuario = db.Usuario.Find(id);
+            db.Usuario.Remove(usuario);
             db.SaveChanges();
-
             return usuario;
         }
 
-        public Usuario GetUsuario(int id)
+        public Usuario GetUsuario(int? id)
         {
-            Usuario usuario = db.Usuarios.Find(id);
+            Usuario usuario = db.Usuario.Find(id);
 
             if (usuario == null)
-            {
                 return null;
-            }
 
             return usuario;
         }
 
         public IQueryable<Usuario> GetUsuarios()
         {
-            return db.Usuarios;
+            return this.db.Usuario;
         }
 
         public void PostUsuario(Usuario usuario)
         {
-            db.Usuarios.Add(usuario);
+            this.db.Usuario.Add(usuario);
             db.SaveChanges();
         }
 
-        public void PutUsuario(int id, Usuario usuario)
+        public void PutUsuario(Usuario usuario)
         {
             db.Entry(usuario).State = EntityState.Modified;
 
@@ -62,7 +55,7 @@ namespace treinamento.site.Models
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!UsuarioExists(id))
+                if (!UsuarioExists(usuario.Id))
                 {
                     throw ex;
                 }
@@ -75,7 +68,7 @@ namespace treinamento.site.Models
 
         private bool UsuarioExists(int id)
         {
-            return db.Usuarios.Count(e => e.Id == id) > 0;
+            return db.Usuario.Count(e => e.Id == id) > 0;
         }
     }
 }
