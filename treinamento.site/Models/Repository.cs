@@ -19,7 +19,15 @@ namespace treinamento.site.Models
 
         public Usuario DeleteUsuario(int id)
         {
-            throw new NotImplementedException();
+            Usuario usuario = db.Usuarios.Find(id);
+
+            if (usuario == null)
+                return null;
+
+            db.Usuarios.Remove(usuario);
+            db.SaveChanges();
+
+            return usuario;
         }
 
         public Usuario GetUsuario(int id)

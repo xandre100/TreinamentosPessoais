@@ -101,9 +101,8 @@ namespace treinamento.site.Controllers
             Usuario usuario = this.repository.GetUsuario(id);
 
             if (usuario == null)
-            {
                 return NotFound();
-            }
+            
 
             this.repository.DeleteUsuario(id);
 
