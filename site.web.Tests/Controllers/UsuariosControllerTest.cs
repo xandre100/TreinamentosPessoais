@@ -40,6 +40,7 @@ namespace site.web.Tests.Controllers
         [TestMethod]
         public void Create()
         {
+            controller = new UsuariosController();
             ViewResult result = controller.Create() as ViewResult;
             Assert.IsNotNull(result);
         }
@@ -57,6 +58,10 @@ namespace site.web.Tests.Controllers
         [TestMethod]
         public void Edit()
         {
+            Usuario usuario = new Usuario() { Id = 1, Nome = "ALEXANDRE", Telefone = 00000000 };
+            mockRepository.Setup(r => r.GetUsuario(It.IsAny<int>())).Returns(usuario);
+            controller = new UsuariosController(mockRepository.Object);
+
             ViewResult result = controller.Edit(1) as ViewResult;
             Assert.IsNotNull(result);
         }
